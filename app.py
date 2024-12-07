@@ -1,9 +1,11 @@
 import json
+import eventlet
 import os
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import dopFuncs
 
+eventlet.monkey_patch()
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'
 socketio = SocketIO(app, async_handlers=True)

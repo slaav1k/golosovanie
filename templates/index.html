@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голосование ГСК "Факел"</title>
     <link rel="stylesheet" href="static/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
 </head>
@@ -81,34 +80,42 @@
     </div>
 
     <script>
-        const socket = io.connect('ws://176.53.146.152/socket.io');
+        function updateVotes() {
+            $.get('/get_votes', function(data) {
+                const voteInfo = document.getElementById('vote_info');
+                const voteTableBody = document.querySelector('#vote_table_body tbody');
 
-        // Обновляем данные голосования в реальном времени
-        socket.on('update_votes', function (data) {
-            const voteInfo = document.getElementById('vote_info');
-            const voteTableBody = document.querySelector('#vote_table_body tbody');
+                // Проверка на существование данных
+                if (data && data.vote_counts) {
+                    const voteCounts = data.vote_counts;
 
-            // Обновляем общее количество голосов
-            voteInfo.innerHTML = `
-                Проголосовали "За": ${data.vote_counts.yes} <br>
-                Проголосовали "Против": ${data.vote_counts.no} <br>
-                Не проголосовали: ${data.vote_counts.not_voted} <br>
-                Всего гаражей: ${data.vote_counts.total}
-            `;
+                    // Защита от возможных ошибок, если свойства отсутствуют
+                    voteInfo.innerHTML = `
+                        Проголосовали "За": ${voteCounts.yes || 0} <br>
+                        Проголосовали "Против": ${voteCounts.no || 0} <br>
+                        Не проголосовали: ${voteCounts.not_voted || 0} <br>
+                        Всего гаражей: ${voteCounts.total || 0}
+                    `;
+                }
 
-            // Обновляем таблицу голосов
-            let tableContent = '';
-            for (const [garage, vote] of Object.entries(data.votes)) {
-                tableContent += `
-                    <tr>
-                        <td>${garage}</td>
-                        <td>${vote ? vote.surname : ''}</td>
-                        <td>${vote ? (vote.vote === 'yes' ? 'За' : 'Против') : 'Не голосовал'}</td>
-                    </tr>
-                `;
-            }
-            voteTableBody.innerHTML = tableContent;
-        });
+                // Обновляем таблицу голосов
+                if (data && data.votes) {
+                    let tableContent = '';
+                    for (const [garage, vote] of Object.entries(data.votes)) {
+                        tableContent += `
+                            <tr>
+                                <td>${garage}</td>
+                                <td>${vote ? vote.surname : ''}</td>
+                                <td>${vote ? (vote.vote === 'yes' ? 'За' : 'Против') : 'Не голосовал'}</td>
+                            </tr>
+                        `;
+                    }
+                    voteTableBody.innerHTML = tableContent;
+                }
+            });
+        }
+
+        setInterval(updateVotes, 5000);
 
         // Инициализация маски для номера телефона
         $.mask.definitions['h'] = "[0|1|3|4|5|6|7|9]";

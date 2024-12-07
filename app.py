@@ -1,16 +1,12 @@
-import eventlet
-eventlet.monkey_patch()
-
 import json
 import os
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import dopFuncs
 
-
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'
-socketio = SocketIO(app, async_mode='eventlet')
+# socketio = SocketIO(app, async_mode='eventlet')
 
 
 # Загрузка голосов из файла
@@ -117,8 +113,8 @@ def vote():
         'total': len(votes)
     }
 
-    # Отправляем данные клиентам через SocketIO
-    socketio.emit('update_votes', {'votes': votes, 'vote_counts': vote_counts})
+    # # Отправляем данные клиентам через SocketIO
+    # socketio.emit('update_votes', {'votes': votes, 'vote_counts': vote_counts})
 
     return '''
             <!DOCTYPE html>
@@ -146,5 +142,24 @@ def vote():
         ''', 200
 
 
+@app.route('/get_votes', methods=['GET'])
+def get_votes():
+    global votes
+
+    # Подсчет голосов
+    vote_counts = {
+        'yes': sum(1 for vote in votes.values() if vote and vote['vote'] == 'yes'),
+        'no': sum(1 for vote in votes.values() if vote and vote['vote'] == 'no'),
+        'not_voted': sum(1 for vote in votes.values() if vote is None),
+        'total': len(votes)
+    }
+
+    # Возвращаем актуальную информацию о голосах
+    return json.dumps({
+        'votes': votes,
+        'vote_counts': vote_counts
+    })
+
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True, use_reloader=False, allow_unsafe_werkzeug=True)
+    app.run(debug=True)

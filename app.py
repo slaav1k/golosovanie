@@ -10,7 +10,7 @@ import dopFuncs
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 
 # Загрузка голосов из файла

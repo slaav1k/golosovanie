@@ -101,6 +101,32 @@ def vote():
                 </html>
             ''', 400
 
+    # Проверяем, если уже есть голос для этого гаража
+    if votes.get(garage_number) is not None:
+        return '''
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Голос уже отдан</title>
+                <link rel="stylesheet" href="/static/styles.css">
+            </head>
+            <body>
+            <div class="container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+                <h1>Вы уже проголосовали за этот гараж.</h1>
+                <button onclick="window.location.href='/'" 
+                        style="padding: 10px; background-color: #007BFF; border: none; 
+                               color: white; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 20px;"
+                        onmouseover="this.style.backgroundColor='#0056b3'" 
+                        onmouseout="this.style.backgroundColor='#007BFF'">
+                    Вернуться на главную
+                </button>
+            </div>
+            </body>
+            </html>
+        ''', 400
+
     # Сохраняем голос
     votes[garage_number] = {'surname': surname, 'phone': phone_number, 'vote': vote_value}
     save_votes(votes)  # Обновляем файл голосов

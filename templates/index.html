@@ -81,7 +81,7 @@
     </div>
 
     <script>
-        const socket = io();
+        const socket = io.connect('ws://176.53.146.152/socket.io');
 
         // Обновляем данные голосования в реальном времени
         socket.on('update_votes', function (data) {

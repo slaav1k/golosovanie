@@ -87,7 +87,7 @@ def vote():
                 </head>
                 <body>
                 <div class="container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-                    <h1>Голос засчитан!</h1>
+                    <h1>Номер не привязан к выбранному гаражу. Голос не засчитан.</h1>
                     <button onclick="window.location.href='/'" 
                             style="padding: 10px; background-color: #007BFF; border: none; 
                                    color: white; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 20px;"
@@ -127,7 +127,7 @@ def vote():
             </head>
             <body>
             <div class="container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-                <h1>Номер не привязан к выбранному гаражу. Голос не засчитан.</h1>
+                <h1>Голос засчитан!</h1>
                 <button onclick="window.location.href='/'" 
                         style="padding: 10px; background-color: #007BFF; border: none; 
                                color: white; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 20px;"

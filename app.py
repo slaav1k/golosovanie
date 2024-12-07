@@ -8,7 +8,7 @@ import dopFuncs
 eventlet.monkey_patch()
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'
-socketio = SocketIO(app, async_handlers=True)
+socketio = SocketIO(app)
 
 
 # Загрузка голосов из файла

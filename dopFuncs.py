@@ -36,5 +36,3 @@ def get_ls_boxes(number_phone):
                 ls_boxes.append(c[0])
     return ls_boxes
 
-
-print(get_ls_boxes("79511013775"))

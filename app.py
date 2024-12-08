@@ -44,7 +44,8 @@ def index():
 
     # Подсчет количества голосов
     vote_counts = {
-        'yes': sum(1 for vote in votes.values() if vote and vote['vote'] == 'yes'),
+        '600': sum(1 for vote in votes.values() if vote and vote['vote'] == '600'),
+        '1200': sum(1 for vote in votes.values() if vote and vote['vote'] == '1200'),
         'no': sum(1 for vote in votes.values() if vote and vote['vote'] == 'no'),
         'not_voted': sum(1 for vote in votes.values() if vote is None),
         'total': len(votes)

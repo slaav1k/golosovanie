@@ -30,10 +30,13 @@
         <label for="surname">Фамилия:</label>
         <input type="text" id="surname" name="surname" required>
 
-        <label>Ваш голос:</label>
+        <label>Ваш голос за повышение:</label>
         <div class="radio-group">
-            <input type="radio" id="vote_yes" name="vote" value="yes" required>
-            <label for="vote_yes">За</label>
+            <input type="radio" id="vote_600" name="vote" value="600" required>
+            <label for="vote_600">На 600 руб</label>
+
+            <input type="radio" id="vote_1200" name="vote" value="1200">
+            <label for="vote_1200">На 1200 руб</label>
 
             <input type="radio" id="vote_no" name="vote" value="no">
             <label for="vote_no">Против</label>
@@ -41,15 +44,25 @@
 
 
 
+
         <br><button type="submit">Проголосовать</button>
     </form>
 
+    <div id="vote_info_base">
+        <u>Правила голосования.</u><br>
+        1 гараж = 1 голос. <br>
+        Указывается номер, привязанный к гаражу. <br>
+        Кто имеет долг до 2023 не допускается. <br>
+    </div>
+
     <div id="vote_info">
-        Проголосовали "За": {{ vote_counts['yes'] }} <br>
+        Проголосовали "Поднять на 600 руб": {{ vote_counts['600'] }} <br>
+        Проголосовали "Поднять на 1200 руб": {{ vote_counts['1200'] }} <br>
         Проголосовали "Против": {{ vote_counts['no'] }} <br>
         Не проголосовали: {{ vote_counts['not_voted'] }} <br>
         Всего гаражей: {{ vote_counts['total'] }}
     </div>
+
 
     <h2>Детализация голосов</h2>
     <div id="vote_table_body">
@@ -68,7 +81,13 @@
                     <td>{{ vote.surname if vote }}</td>
                     <td>
                         {% if vote %}
-                            {{ 'За' if vote.vote == 'yes' else 'Против' }}
+                            {% if vote.vote == '600' %}
+                                За повышение на 600 руб
+                            {% elif vote.vote == '1200' %}
+                                За повышение на 1200 руб
+                            {% else %}
+                                Против
+                            {% endif %}
                         {% else %}
                             Не голосовал
                         {% endif %}
@@ -91,11 +110,13 @@
 
                     // Защита от возможных ошибок, если свойства отсутствуют
                     voteInfo.innerHTML = `
-                        Проголосовали "За": ${voteCounts.yes || 0} <br>
-                        Проголосовали "Против": ${voteCounts.no || 0} <br>
-                        Не проголосовали: ${voteCounts.not_voted || 0} <br>
-                        Всего гаражей: ${voteCounts.total || 0}
+                        Проголосовали за повышение на 600 руб: ${voteCounts['600'] || 0} <br>
+                        Проголосовали за повышение на 1200 руб: ${voteCounts['1200'] || 0} <br>
+                        Проголосовали "Против": ${voteCounts['no'] || 0} <br>
+                        Не проголосовали: ${voteCounts['not_voted'] || 0} <br>
+                        Всего гаражей: ${voteCounts['total'] || 0}
                     `;
+
                 }
 
                 // Обновляем таблицу голосов
@@ -106,7 +127,15 @@
                             <tr>
                                 <td>${garage}</td>
                                 <td>${vote ? vote.surname : ''}</td>
-                                <td>${vote ? (vote.vote === 'yes' ? 'За' : 'Против') : 'Не голосовал'}</td>
+                                <td>${
+                                    vote
+                                        ? vote.vote === '600'
+                                            ? 'За повышение на 600 руб'
+                                            : vote.vote === '1200'
+                                            ? 'За повышение на 1200 руб'
+                                            : 'Против'
+                                        : 'Не голосовал'
+                                }</td>
                             </tr>
                         `;
                     }
